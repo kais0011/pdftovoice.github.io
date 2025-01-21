@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF vers Parole</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="introPage" class="container">
+        <h1 id="welcomeMessage">Bienvenue sur PDF vers Parole</h1>
+        <p id="description">Cette application vous permet de télécharger un fichier PDF, de le convertir en texte et de le lire à haute voix. Vous pouvez également afficher le contenu du PDF et contrôler la lecture avec des boutons de pause et de reprise.</p>
+        <a href="main.html"><button id="enterBtn">Entrer</button></a>
+    </div>
+
+    <script>
+        // Function to get browser language
+        function getBrowserLanguage() {
+            return navigator.languages ? navigator.languages[0] : (navigator.language || navigator.userLanguage);
+        }
+
+        // Set document language and translate content on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const langCode = getBrowserLanguage().split('-')[0]; // Use language part only, not the region
+            document.documentElement.lang = langCode;
+
+            // Translation messages for different languages
+            const translations = {
+                'en': {
+                    welcomeMessage: "Welcome to PDF to Speech",
+                    description: "This application allows you to upload a PDF file, convert it to text, and read it aloud. You can also view the PDF content and control the reading with pause and resume buttons.",
+                    enterBtn: "Enter"
+                },
+                'fr': {
+                    welcomeMessage: "Bienvenue sur PDF vers Parole",
+                    description: "Cette application vous permet de télécharger un fichier PDF, de le convertir en texte et de le lire à haute voix. Vous pouvez également afficher le contenu du PDF et contrôler la lecture avec des boutons de pause et de reprise.",
+                    enterBtn: "Entrer"
+                },
+                'ar': {
+                    welcomeMessage: "مرحبًا بك في PDF إلى خطاب",
+                    description: "تتيح لك هذه التطبيق تحميل ملف PDF وتحويله إلى نص وقراءته بصوت عالٍ. يمكنك أيضًا عرض محتوى PDF والتحكم في القراءة باستخدام أزرار الإيقاف المؤقت والاستئناف.",
+                    enterBtn: "دخول"
+                }
+            };
+
+            // Apply translated texts based on browser language
+            function setLanguageText(language) {
+                const texts = translations[language] || translations['en']; // Fallback to English
+                document.getElementById('welcomeMessage').textContent = texts.welcomeMessage;
+                document.getElementById('description').textContent = texts.description;
+                document.getElementById('enterBtn').textContent = texts.enterBtn;
+            }
+
+            setLanguageText(langCode); // Set text according to browser language
+        });
+    </script>
+</body>
+</html>
+
