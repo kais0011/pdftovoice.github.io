@@ -1,3 +1,5 @@
+
+// تحديد لغة المتصفح
 const userLanguage = navigator.language || navigator.userLanguage;
 
 // نصوص الواجهة بلغات مختلفة
@@ -44,6 +46,8 @@ document.getElementById("invert-btn").textContent = texts.invert;
 document.getElementById("rotate-btn").textContent = texts.rotate;
 document.getElementById("crop-btn").textContent = texts.crop;
 document.getElementById("download-btn").textContent = texts.download;
+
+// بقية الكود
 const upload = document.getElementById('upload');
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
@@ -51,23 +55,47 @@ const cropCanvas = document.getElementById('cropCanvas');
 const cropCtx = cropCanvas.getContext('2d');
 let originalImage = null;
 
-upload.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.onload = (event) => {
-        const img = new Image();
-        img.onload = () => {
-            canvas.width = img.width;
-            canvas.height = img.height;
-            ctx.drawImage(img, 0, 0);
-            originalImage = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        };
-        img.src = event.target.result;
-    };
-    reader.readAsDataURL(file);
-});
 let isCropping = false;
 let startX, startY, endX, endY;
+
+upload.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    try {
+        const img = await loadImage(file);
+        // تحديد حجم الصورة إذا كانت كبيرة
+        const maxWidth = 800; // الحد الأقصى للعرض
+        const maxHeight = 800; // الحد الأقصى للارتفاع
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxWidth || height > maxHeight) {
+            const ratio = Math.min(maxWidth / width, maxHeight / height);
+            width = width * ratio;
+            height = height * ratio;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+        originalImage = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    } catch (error) {
+        console.error('Failed to load image:', error);
+    }
+});
+
+async function loadImage(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const img = new Image();
+            img.onload = () => resolve(img);
+            img.onerror = reject;
+            img.src = event.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
 
 canvas.addEventListener('mousedown', (e) => {
     if (isCropping) {
@@ -105,6 +133,7 @@ canvas.addEventListener('mousemove', (e) => {
 // دعم أحداث اللمس للقص اليدوي
 canvas.addEventListener('touchstart', (e) => {
     if (isCropping) {
+        e.preventDefault(); // منع السلوك الافتراضي
         const rect = canvas.getBoundingClientRect();
         startX = e.touches[0].clientX - rect.left;
         startY = e.touches[0].clientY - rect.top;
@@ -113,6 +142,7 @@ canvas.addEventListener('touchstart', (e) => {
 
 canvas.addEventListener('touchend', (e) => {
     if (isCropping) {
+        e.preventDefault(); // منع السلوك الافتراضي
         const rect = canvas.getBoundingClientRect();
         endX = e.changedTouches[0].clientX - rect.left;
         endY = e.changedTouches[0].clientY - rect.top;
@@ -123,6 +153,7 @@ canvas.addEventListener('touchend', (e) => {
 
 canvas.addEventListener('touchmove', (e) => {
     if (isCropping) {
+        e.preventDefault(); // منع السلوك الافتراضي
         const rect = canvas.getBoundingClientRect();
         const currentX = e.touches[0].clientX - rect.left;
         const currentY = e.touches[0].clientY - rect.top;
@@ -136,34 +167,6 @@ canvas.addEventListener('touchmove', (e) => {
     }
 });
 
-function cropImage() {
-    const x = Math.min(startX, endX);
-    const y = Math.min(startY, endY);
-    const width = Math.abs(startX - endX);
-    const height = Math.abs(startY - endY);
-
-    const imageData = ctx.getImageData(x, y, width, height);
-    cropCanvas.width = width;
-    cropCanvas.height = height;
-    cropCtx.putImageData(imageData, 0, 0);
-}
-function applyFilter(filter) {
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const data = imageData.data;
-    for (let i = 0; i < data.length; i += 4) {
-        if (filter === 'grayscale') {
-            const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-            data[i] = avg;
-            data[i + 1] = avg;
-            data[i + 2] = avg;
-        } else if (filter === 'invert') {
-            data[i] = 255 - data[i];
-            data[i + 1] = 255 - data[i + 1];
-            data[i + 2] = 255 - data[i + 2];
-        }
-    }
-    ctx.putImageData(imageData, 0, 0);
-}
 function applyFilter(filter) {
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const data = imageData.data;
@@ -245,46 +248,4 @@ function updateImage() {
 }
 
 function rotateImage() {
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const tempCanvas = document.createElement('canvas');
-    tempCanvas.width = canvas.height;
-    tempCanvas.height = canvas.width;
-    const tempCtx = tempCanvas.getContext('2d');
-
-    tempCtx.translate(tempCanvas.width / 2, tempCanvas.height / 2);
-    tempCtx.rotate(Math.PI / 2);
-    tempCtx.drawImage(canvas, -canvas.width / 2, -canvas.height / 2);
-    canvas.width = tempCanvas.width;
-    canvas.height = tempCanvas.height;
-    ctx.drawImage(tempCanvas, 0, 0);
-    originalImage = ctx.getImageData(0, 0, canvas.width, canvas.height);
-}
-
-function startManualCrop() {
-    isCropping = true;
-}
-
-function cropImage() {
-    const x = Math.min(startX, endX);
-    const y = Math.min(startY, endY);
-    const width = Math.abs(startX - endX);
-    const height = Math.abs(startY - endY);
-
-    const imageData = ctx.getImageData(x, y, width, height);
-    cropCanvas.width = width;
-    cropCanvas.height = height;
-    cropCtx.putImageData(imageData, 0, 0);
-}
-
-function downloadImage() {
-    const link = document.createElement('a');
-    link.download = 'edited-image.png';
-    link.href = cropCanvas.toDataURL();
-    link.click();
-}
-
-document.getElementById('grayscale-btn').addEventListener('click', () => applyFilter('grayscale'));
-document.getElementById('invert-btn').addEventListener('click', () => applyFilter('invert'));
-document.getElementById('rotate-btn').addEventListener('click', rotateImage);
-document.getElementById('crop-btn').addEventListener('click', startManualCrop);
-document.getElementById('download-btn').addEventListener('click', downloadImage);
+    const imageData = ctx.getImageData(
