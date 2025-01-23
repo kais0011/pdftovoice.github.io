@@ -1,16 +1,23 @@
-
-
-
 <!DOCTYPE html>
-<html lang="ar" dir="auto">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تعديل الصور</title>
     <link rel="stylesheet" href="styles.css">
+
 </head>
 <body>
-    <!-- إشهار 1 -->
+    <script type="text/javascript">
+        atOptions = {
+            'key' : 'f7652a27d3b334b13f3425fda9fc54e1',
+            'format' : 'iframe',
+            'height' : 90,
+            'width' : 728,
+            'params' : {}
+        };
+    </script>
+    <script type="text/javascript" src="//www.highperformanceformat.com/f7652a27d3b334b13f3425fda9fc54e1/invoke.js"></script>
     <script type="text/javascript">
         atOptions = {
             'key' : 'a5683ee99f2efb09fd15b7e01c7cbfc2',
@@ -21,11 +28,32 @@
         };
     </script>
     <script type="text/javascript" src="//www.highperformanceformat.com/a5683ee99f2efb09fd15b7e01c7cbfc2/invoke.js"></script>
-
     <h1 id="app-title">تعديل الصور</h1>
     <input type="file" id="upload" accept="image/*">
+    <div class="canvas-container">
+        <canvas id="canvas"></canvas>
+    </div>
+    <div class="controls">
+        <div>
+            <label id="brightness-label">سطوع:</label>
+            <input type="range" id="brightness" min="-100" max="100" value="0">
+        </div>
+        <div>
+            <label id="contrast-label">تباين:</label>
+            <input type="range" id="contrast" min="-100" max="100" value="0">
+        </div>
+        <div>
+            <label id="saturation-label">تشبع:</label>
+            <input type="range" id="saturation" min="-100" max="100" value="0">
+        </div>
+        <button id="apply-filters-btn">تطبيق الفلاتر</button>
+        <button id="grayscale-btn">أبيض وأسود</button>
+        <button id="crop-btn">قص يدوي</button>
+        <button id="download-btn">تحميل الصورة</button>
+        <button id="reset-btn">إعادة تعيين</button>
+    </div>
 
-    <!-- إشهار 2 -->
+    <script src="scripts.js"></script>
     <script type="text/javascript">
         atOptions = {
             'key' : 'f7652a27d3b334b13f3425fda9fc54e1',
@@ -36,28 +64,6 @@
         };
     </script>
     <script type="text/javascript" src="//www.highperformanceformat.com/f7652a27d3b334b13f3425fda9fc54e1/invoke.js"></script>
-
-    <div class="canvas-container">
-        <canvas id="canvas" willReadFrequently="true"></canvas>
-        <canvas id="cropCanvas" willReadFrequently="true"></canvas>
-    </div>
-
-    <div class="controls">
-        <label id="brightness-label">السطوع: <input type="range" id="brightness" min="0" max="200" value="100"></label>
-        <label id="contrast-label">التباين: <input type="range" id="contrast" min="0" max="200" value="100"></label>
-        <label id="saturation-label">التشبع: <input type="range" id="saturation" min="0" max="200" value="100"></label>
-        <label id="hue-label">درجة اللون: <input type="range" id="hue" min="0" max="360" value="0"></label>
-    </div>
-
-    <div class="buttons">
-        <button onclick="applyFilter('grayscale')" id="grayscale-btn">أبيض وأسود</button>
-        <button onclick="applyFilter('invert')" id="invert-btn">عكس الألوان</button>
-        <button onclick="rotateImage()" id="rotate-btn">تدوير</button>
-        <button onclick="startManualCrop()" id="crop-btn">بدء القص اليدوي</button>
-        <button onclick="downloadImage()" id="download-btn">تحميل الصورة</button>
-    </div>
-
-    <!-- إشهار 3 -->
     <script type="text/javascript">
         atOptions = {
             'key' : 'a5683ee99f2efb09fd15b7e01c7cbfc2',
@@ -68,19 +74,5 @@
         };
     </script>
     <script type="text/javascript" src="//www.highperformanceformat.com/a5683ee99f2efb09fd15b7e01c7cbfc2/invoke.js"></script>
-
-    <!-- إشهار 4 -->
-    <script type="text/javascript">
-        atOptions = {
-            'key' : 'f7652a27d3b334b13f3425fda9fc54e1',
-            'format' : 'iframe',
-            'height' : 90,
-            'width' : 728,
-            'params' : {}
-        };
-    </script>
-    <script type="text/javascript" src="//www.highperformanceformat.com/f7652a27d3b334b13f3425fda9fc54e1/invoke.js"></script>
-
-    <script src="scripts.js"></script>
 </body>
 </html>
