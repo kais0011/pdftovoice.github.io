@@ -1,156 +1,154 @@
+
 body {
-    font-family: 'Arial', sans-serif;
-    text-align: center;
-    padding: 20px;
-    background-color: #f9f9f9;
+    font-family: Arial, sans-serif;
     margin: 0;
+    padding: 0;
+    background-color: #87ceeb;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
 }
 
-h1 {
-    color: #4CAF50;
-    margin-bottom: 20px;
-    font-size: 2.5em;
-}
-
-input[type="file"] {
-    margin-bottom: 20px;
+.container {
+    width: 90%;
+    max-width: 800px;
+    margin: 0 auto;
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #fff;
-    color: #4CAF50;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    text-align: center;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 10;
 }
 
-input[type="file"]:hover {
-    background-color: #e8f5e9;
-}
-
-.canvas-container {
-    display: flex;
-    justify-content: center;
+.buttons-container, .content-container {
     margin-bottom: 20px;
 }
 
-canvas {
-    border: 2px solid #4CAF50;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background-color: white;
-    margin: 20px 0;
-    transition: transform 0.3s ease;
-}
-
-canvas:hover {
-    transform: scale(1.02);
-}
-
-.controls {
-    margin: 20px 0;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
-label {
-    display: block;
-    margin: 10px 0;
-    color: #4CAF50;
-    font-weight: bold;
-}
-
-input[type="range"] {
+input[type="file"], button {
     width: 100%;
-    margin-top: 5px;
-}
-
-.buttons {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    flex-wrap: wrap;
+    padding: 10px;
+    margin: 5px 0;
+    font-size: 1em;
 }
 
 button {
-    background-color: #4CAF50;
+    cursor: pointer;
+    background-color: #007bff;
     color: white;
     border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    margin: 5px;
     border-radius: 5px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 button:hover {
-    background-color: #388E3C;
-    transform: scale(1.05);
+    background-color: #0056b3;
 }
 
-button:active {
-    background-color: #2E7D32;
+.control-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
 }
 
-/* تصميم متجاوب للهواتف والأجهزة اللوحية */
-@media (max-width: 768px) {
-    h1 {
-        font-size: 1.8em;
-    }
+#progressContainer {
+    width: 100%;
+    height: 10px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 10px;
+}
 
-    input[type="file"] {
-        width: 100%;
-        padding: 8px;
-        font-size: 0.9em;
-    }
+#progress {
+    height: 100%;
+    width: 0;
+    background-color: #007bff;
+    transition: width 0.3s;
+}
 
-    .canvas-container {
-        flex-direction: column;
-        align-items: center;
-    }
+.spinner {
+    margin: 20px auto;
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top: 4px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
 
-    canvas {
-        width: 100%;
-        max-width: 300px;
-        height: auto;
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
     }
-
-    .controls {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    label {
-        font-size: 0.9em;
-    }
-
-    .buttons {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    button {
-        width: 100%;
-        max-width: 200px;
-        font-size: 0.9em;
+    100% {
+        transform: rotate(360deg);
     }
 }
 
-@media (max-width: 480px) {
-    h1 {
-        font-size: 1.5em;
+.pdf-viewer {
+    width: 100%;
+    height: 400px;
+    overflow: auto;
+    border: 1px solid #ccc;
+    background-color: white;
+    position: relative;
+    z-index: 1;
+}
+
+.language-notice {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 15px;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    width: 80%;
+    max-width: 600px;
+    text-align: center;
+}
+
+.language-notice button {
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.language-notice button:hover {
+    background-color: #c9302c;
+}
+
+@media (max-width: 600px) {
+    .buttons-container {
+        flex-direction: column;
     }
 
-    input[type="file"] {
-        font-size: 0.8em;
+    .control-buttons {
+        flex-direction: column;
+        gap: 5px;
     }
 
-    label {
-        font-size: 0.8em;
+    .control-buttons button {
+        margin-bottom: 5px;
     }
 
-    button {
-        font-size: 0.8em;
+    .language-notice {
+        width: 90%;
+        padding: 12px;
+    }
+}
+
+@media (min-width: 600px) and (max-width: 1024px) {
+    .pdf-viewer {
+        height: 500px;
     }
 }
