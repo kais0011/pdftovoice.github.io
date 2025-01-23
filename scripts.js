@@ -1,4 +1,3 @@
-
 // تحديد لغة المتصفح
 const userLanguage = navigator.language || navigator.userLanguage;
 
@@ -58,8 +57,13 @@ let originalImage = null;
 let isCropping = false;
 let startX, startY, endX, endY;
 
+// تحميل الصورة
 upload.addEventListener('change', async (e) => {
     const file = e.target.files[0];
+    if (!file) {
+        alert("يرجى اختيار صورة صالحة.");
+        return;
+    }
     try {
         const img = await loadImage(file);
         // تحديد حجم الصورة إذا كانت كبيرة
@@ -83,6 +87,7 @@ upload.addEventListener('change', async (e) => {
     }
 });
 
+// تحميل الصورة ككائن Image
 async function loadImage(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -97,6 +102,12 @@ async function loadImage(file) {
     });
 }
 
+// بدء القص اليدوي
+function startManualCrop() {
+    isCropping = true;
+}
+
+// أحداث الفأرة للقص
 canvas.addEventListener('mousedown', (e) => {
     if (isCropping) {
         const rect = canvas.getBoundingClientRect();
@@ -130,7 +141,7 @@ canvas.addEventListener('mousemove', (e) => {
     }
 });
 
-// دعم أحداث اللمس للقص اليدوي
+// أحداث اللمس للقص
 canvas.addEventListener('touchstart', (e) => {
     if (isCropping) {
         e.preventDefault(); // منع السلوك الافتراضي
@@ -167,6 +178,7 @@ canvas.addEventListener('touchmove', (e) => {
     }
 });
 
+// تطبيق الفلاتر
 function applyFilter(filter) {
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const data = imageData.data;
@@ -185,6 +197,7 @@ function applyFilter(filter) {
     ctx.putImageData(imageData, 0, 0);
 }
 
+// تحديث الصورة بناءً على التعديلات
 const brightness = document.getElementById('brightness');
 const contrast = document.getElementById('contrast');
 const saturation = document.getElementById('saturation');
@@ -247,5 +260,40 @@ function updateImage() {
     }
 }
 
+// تدوير الصورة
 function rotateImage() {
-    const imageData = ctx.getImageData(
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = canvas.height;
+    tempCanvas.height = canvas.width;
+    const tempCtx = tempCanvas.getContext('2d');
+
+    tempCtx.translate(tempCanvas.width / 2, tempCanvas.height / 2);
+    tempCtx.rotate(Math.PI / 2);
+    tempCtx.drawImage(canvas, -canvas.width / 2, -canvas.height / 2);
+    canvas.width = tempCanvas.width;
+    canvas.height = tempCanvas.height;
+    ctx.drawImage(tempCanvas, 0, 0);
+    originalImage = ctx.getImageData(0, 0, canvas.width, canvas.height);
+}
+
+// قص الصورة
+function cropImage() {
+    const x = Math.min(startX, endX);
+    const y = Math.min(startY, endY);
+    const width = Math.abs(startX - endX);
+    const height = Math.abs(startY - endY);
+
+    const imageData = ctx.getImageData(x, y, width, height);
+    cropCanvas.width = width;
+    cropCanvas.height = height;
+    cropCtx.putImageData(imageData, 0, 0);
+}
+
+// تحميل الصورة بعد التعديل
+function downloadImage() {
+    const link = document.createElement('a');
+    link.download = 'edited-image.png';
+    link.href = cropCanvas.toDataURL();
+    link.click();
+}
